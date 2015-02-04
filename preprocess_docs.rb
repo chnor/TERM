@@ -2,7 +2,7 @@
 require './porter.rb'
 require 'rubygems'
 require 'rexml/document'
-require '../google_ngram/lookup.rb'
+require './google_ngram/lookup.rb'
 
 $stdout.sync = true
 
@@ -29,27 +29,6 @@ for line in ARGF
 	data << line.strip.split(", ")
 	# STDERR.puts data.last.join " "
 end
-
-# posses = {}
-# for foreground, ds in data.chunk {|d| d[3] != "O" }
-# 	next unless foreground
-# 	poss = ds.map {|d| d[4] }
-# 	STDERR.puts "#{poss.join " "}: #{ds.map(&:first).join(" ")}"
-# 	posses[poss] = 0 unless posses.include? poss
-# 	posses[poss] += 1
-# end
-# total = posses.values.inject 0, :+
-# STDERR.puts 
-# cumsum = 0
-# for poss, count in posses.sort_by {|k, v| -v }
-# 	cumsum += 100 * count.to_f/total
-# 	break if cumsum > 99
-# 	break if 100 * count.to_f/total < 0.5
-# 	STDERR.puts "\t#{poss.join(" ")} & #{(100 * count.to_f/total).round(1)} \\\% \\"
-# end
-# STDERR.puts cumsum
-
-# exit
 
 Dir.chdir(File.dirname(__FILE__)) do
 	# tf 		= {}
@@ -89,6 +68,11 @@ Dir.chdir(File.dirname(__FILE__)) do
 		tf_idf[[file_no.to_i, w.to_i]] = c
 	end
 
+	puts "Removing temporary files..."
+	`rem cooc_file_in`
+	`rem cooc_file_mi`
+	`rem cooc_file_tf_idf`
+
 	for d_i in data
 		w 		   = d_i[0]
 		prev_w 	   = d_i[1]
@@ -111,12 +95,12 @@ timelines = {}
 unigrams = data.map(&:first).uniq.sort
 bigrams  = data.map {|c| "#{c[1]} #{c[0]}" }.uniq.sort
 for term in unigrams
-	timelines[term.downcase] = vectorize (find_all term), 1800..2008
-	# timelines[term.downcase] = vectorize ({}), 1800..2008
+	# timelines[term.downcase] = vectorize (find_all term), 1800..2008
+	timelines[term.downcase] = vectorize ({}), 1800..2008
 end
 for term in bigrams
-	timelines[term.downcase] = vectorize (find_all term), 1800..2008
-	# timelines[term.downcase] = vectorize ({}), 1800..2008
+	# timelines[term.downcase] = vectorize (find_all term), 1800..2008
+	timelines[term.downcase] = vectorize ({}), 1800..2008
 end
 STDERR.puts "Done"
 
@@ -134,7 +118,7 @@ end
 STDERR.puts "Extracting features from timelines"
 unigram_features = []
 bigram_features  = []
-Dir.chdir('../google_ngram') do
+Dir.chdir(File.dirname(__FILE__)) do
 	File.open("timelines_temp_file_in", "w") do |f|
 		for t in unigram_timelines
 			f.write "#{t.join " "}\n"
@@ -158,6 +142,11 @@ Dir.chdir('../google_ngram') do
 			bigram_features << features
 		end
 	end
+	
+	puts "Removing temporary files..."
+	`rem timelines_temp_file`
+	`rem timelines_temp_file_in`
+
 end
 STDERR.puts "Done"
 

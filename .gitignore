@@ -1,4 +1,10 @@
 CRFSuite
 data
 stanford POS
-google_ngram
+google_ngram/cache
+google_ngram/downloads
+cooc_file_in
+cooc_file_mi
+cooc_file_tf_idf
+timelines_temp_file
+timelines_temp_file_in
