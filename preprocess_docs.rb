@@ -69,9 +69,9 @@ Dir.chdir(File.dirname(__FILE__)) do
 	end
 
 	puts "Removing temporary files..."
-	`rem cooc_file_in`
-	`rem cooc_file_mi`
-	`rem cooc_file_tf_idf`
+	`rm cooc_file_in`
+	`rm cooc_file_mi`
+	`rm cooc_file_tf_idf`
 
 	for d_i in data
 		w 		   = d_i[0]
@@ -95,12 +95,12 @@ timelines = {}
 unigrams = data.map(&:first).uniq.sort
 bigrams  = data.map {|c| "#{c[1]} #{c[0]}" }.uniq.sort
 for term in unigrams
-	# timelines[term.downcase] = vectorize (find_all term), 1800..2008
-	timelines[term.downcase] = vectorize ({}), 1800..2008
+	timelines[term.downcase] = vectorize (find_all term), 1800..2008
+	# timelines[term.downcase] = vectorize ({}), 1800..2008
 end
 for term in bigrams
-	# timelines[term.downcase] = vectorize (find_all term), 1800..2008
-	timelines[term.downcase] = vectorize ({}), 1800..2008
+	timelines[term.downcase] = vectorize (find_all term), 1800..2008
+	# timelines[term.downcase] = vectorize ({}), 1800..2008
 end
 STDERR.puts "Done"
 
@@ -144,8 +144,8 @@ Dir.chdir(File.dirname(__FILE__)) do
 	end
 	
 	puts "Removing temporary files..."
-	`rem timelines_temp_file`
-	`rem timelines_temp_file_in`
+	`rm timelines_temp_file`
+	`rm timelines_temp_file_in`
 
 end
 STDERR.puts "Done"
