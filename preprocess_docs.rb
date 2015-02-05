@@ -68,7 +68,7 @@ Dir.chdir(File.dirname(__FILE__)) do
 		tf_idf[[file_no.to_i, w.to_i]] = c
 	end
 
-	puts "Removing temporary files..."
+	STDERR.puts "Removing temporary files..."
 	`rm cooc_file_in`
 	`rm cooc_file_mi`
 	`rm cooc_file_tf_idf`
@@ -143,7 +143,7 @@ Dir.chdir(File.dirname(__FILE__)) do
 		end
 	end
 	
-	puts "Removing temporary files..."
+	STDERR.puts "Removing temporary files..."
 	`rm timelines_temp_file`
 	`rm timelines_temp_file_in`
 
