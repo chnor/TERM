@@ -1,6 +1,7 @@
 CRFSuite
 data
 stanford POS
+kuromoji-0.7.7
 google_ngram/cache
 google_ngram/downloads
 cooc_file_in

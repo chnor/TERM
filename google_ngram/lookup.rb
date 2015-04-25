@@ -2,8 +2,8 @@
 $stdout.sync = true
 
 RANGE_CUT_OFF = 2**10
-# CACHE_SIZE_LIMIT = 10 * 2**30
-CACHE_SIZE_LIMIT = 1 # Don't keep files open
+CACHE_SIZE_LIMIT = 10 * 2**30
+# CACHE_SIZE_LIMIT = 1 # Don't keep files open
 VERBOSE = true
 
 def load_files

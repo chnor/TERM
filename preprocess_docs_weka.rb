@@ -92,25 +92,44 @@ end
 
 STDERR.puts "Extracting timelines"
 timelines = {}
-unigrams = data.map(&:first).uniq.sort
-bigrams  = data.map {|c| "#{c[1]} #{c[0]}" }.uniq.sort
-for term in unigrams
-	# timelines[term.downcase] = vectorize (find_all term), 1800..2008
-	timelines[term.downcase] = vectorize ({}), 1800..2008
+for phrase in data.map(&:first).uniq.sort
+	term = phrase.split "_"
+	if term.size > 2
+		# Ignore. We only use bigrams
+	else
+		timelines[phrase.downcase] = vectorize (find_all term.join " "), 1800..2008
+	end
 end
-for term in bigrams
-	# timelines[term.downcase] = vectorize (find_all term), 1800..2008
-	timelines[term.downcase] = vectorize ({}), 1800..2008
-end
+
+# unigrams = data.map(&:first).uniq.sort
+# bigrams  = data.map {|c| "#{c[1]} #{c[0]}" }.uniq.sort
+# for term in unigrams
+# 	timelines[term.downcase] = vectorize (find_all term), 1800..2008
+# end
+# for term in bigrams
+# 	timelines[term.downcase] = vectorize (find_all term), 1800..2008
+# end
 STDERR.puts "Done"
 
 unigram_timelines = []
 bigram_timelines  = []
 for p in data
-	w 	= p[0]
+	w 	= p[0].split "_"
 	p_w = p[1]
-	unigram_timeline = timelines[w.downcase]
-	bigram_timeline  = timelines["#{p_w} #{w}".downcase]
+
+	unigram_timeline = nil
+	case w.size
+	when 1
+		unigram_timeline = timelines[w[0].downcase]
+	when 2
+		unigram_timeline = timelines[w.join(" ").downcase]
+	when 3
+		unigram_timeline = timelines[w[1..-1].join(" ").downcase]
+	end
+	bigram_timeline  = timelines["#{p_w} #{w[0]}".downcase]
+
+	# unigram_timeline = timelines[w.downcase]
+	# bigram_timeline  = timelines["#{p_w} #{w}".downcase]
 	unigram_timelines << unigram_timeline
 	bigram_timelines  << bigram_timeline
 end
@@ -154,14 +173,8 @@ raise "Features not of equal size" unless unigram_features.size == bigram_featur
 
 STDERR.puts "Outputting"
 
-data = data.zip(unigram_features, bigram_features).map &:flatten
 for p in data
 	puts p.join ", "
-	# A CRFSuite chunking bug ignores all input until we
-	# output a blank line.
-	puts if p[6] == "." # Blank line after each sentence
-	puts if p[6] == "。" # Blank line after each sentence
 end
-puts
 
 STDERR.puts "Done"

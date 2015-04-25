@@ -11,6 +11,10 @@ function [mu, sigma, gamma, beta] = pdf_skewness(p, x)
     % Calculate standard deviation of x
     sigma = sqrt(sum(p .* (x_n.^2), 2) ./ sum(p, 2));
     
+%     x_n_0 = x_n .* (x_n < 0);
+%     p_0_sum = sum(p .* (x_n < 0), 2);
+%     sigma = sqrt(sum(p .* (x_n_0.^2), 2) ./ p_0_sum);
+    
     % Calculate skewness of x
 %     gamma = (sum(p .* (x_n.^3), 2) ./ sum(p, 2)) ./ (sum(p .* (x_n.^2), 2) ./ (sum(p, 2) - 1)).^(3/2);
     gamma = (sum(p .* (x_n.^3), 2) ./ sum(p, 2)) ./ (sum(p .* (x_n.^2), 2) ./ (sum(p, 2))).^(3/2);
